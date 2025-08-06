@@ -21,18 +21,30 @@ echo "[INFO] Currently installed version: $INSTALLED_VERSION"
 
 if [[ "$INSTALLED_VERSION" == "$VERSION" ]]; then
   echo "[INFO] You already have the latest version ($VERSION). No action needed."
-  exit 0
+else
+  # 4. Download and install the .deb package
+  TEMP_DEB=$(mktemp --suffix=".deb")
+  echo "[INFO] Downloading package..."
+  curl -L -o "$TEMP_DEB" "$DEB_URL"
+
+  echo "[INFO] Installing package..."
+  sudo apt install -y "$TEMP_DEB"
+  rm -f "$TEMP_DEB"
+
+  echo "[INFO] draw.io has been updated to version $VERSION"
 fi
 
-# 4. Download and install the .deb package
-TEMP_DEB=$(mktemp --suffix=".deb")
-echo "[INFO] Downloading package..."
-curl -L -o "$TEMP_DEB" "$DEB_URL"
+# 5. Ensure the application icon is properly installed
+ICON_PATH="/usr/share/icons/hicolor/512x512/apps/drawio.png"
+if [[ ! -f "$ICON_PATH" ]]; then
+  echo "[INFO] Downloading draw.io icon..."
+  sudo wget -q https://raw.githubusercontent.com/jgraph/drawio-desktop/dev/icons/icon512.png -O "$ICON_PATH"
 
-echo "[INFO] Installing package..."
-sudo apt install -y "$TEMP_DEB"
+  echo "[INFO] Updating icon cache..."
+  sudo gtk-update-icon-cache /usr/share/icons/hicolor
+else
+  echo "[INFO] draw.io icon already present."
+fi
 
-rm -f "$TEMP_DEB"
-
-echo "[DONE] draw.io has been updated to version $VERSION"
+echo "[DONE] draw.io installation and icon setup completed."
 
