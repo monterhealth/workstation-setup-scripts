@@ -4,6 +4,8 @@
 
 set -euo pipefail
 
+PACKAGE_NAME="redisinsight"
+
 echo "[INFO] Installing prerequisites..."
 sudo apt update
 sudo apt install -y curl ca-certificates jq
@@ -38,25 +40,22 @@ fi
 echo "[INFO] Latest version available: $VERSION"
 echo "[INFO] Download URL: $DEB_URL"
 
-INSTALLED_VERSION="$(
-  dpkg-query -W -f='${Version}' redis-insight 2>/dev/null \
-    || dpkg-query -W -f='${Version}' redisinsight 2>/dev/null \
-    || echo none
-)"
+INSTALLED_VERSION="$(dpkg-query -W -f='${Version}' "$PACKAGE_NAME" 2>/dev/null || echo none)"
 echo "[INFO] Currently installed version: $INSTALLED_VERSION"
 
 if [[ "$INSTALLED_VERSION" == "$VERSION"* ]]; then
   echo "[INFO] You already have Redis Insight $VERSION. No action needed."
 else
   TEMP_DEB=$(mktemp --suffix=".deb")
+  trap 'rm -f "$TEMP_DEB"' EXIT
   echo "[INFO] Downloading package..."
   curl -fL -o "$TEMP_DEB" "$DEB_URL"
+  chmod 644 "$TEMP_DEB"
 
   echo "[INFO] Installing package..."
   sudo apt install -y "$TEMP_DEB"
-  rm -f "$TEMP_DEB"
 
   echo "[INFO] Redis Insight has been updated to version $VERSION"
 fi
 
-echo "[DONE] Redis Insight is installed. Launch it via your application menu or with: redis-insight"
+echo "[DONE] Redis Insight is installed. Launch it via your application menu or with: $PACKAGE_NAME"
