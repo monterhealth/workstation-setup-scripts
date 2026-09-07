@@ -1,22 +1,30 @@
 #!/bin/bash
 
+# 12-install-spotify.sh
+# Installs Spotify from the official APT repository.
+
 set -e
 
-echo "[INFO] Installing Spotify..."
+SPOTIFY_KEY_URL="https://download.spotify.com/debian/pubkey_5384CE82BA52C83A.asc"
+SPOTIFY_KEYRING="/etc/apt/keyrings/spotify.gpg"
+SPOTIFY_SOURCE_LIST="/etc/apt/sources.list.d/spotify.list"
 
-# Download de key op de juiste manier
-echo "[INFO] Downloading and saving the Spotify GPG key..."
-curl -sS https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
-echo "deb https://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+echo "[INFO] Installing prerequisites..."
+sudo apt-get update
+sudo apt-get install -y curl ca-certificates gnupg
 
-# Voeg de repo toe met correcte signed-by verwijzing
+echo "[INFO] Adding Spotify GPG key..."
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL "$SPOTIFY_KEY_URL" | sudo gpg --dearmor --yes -o "$SPOTIFY_KEYRING"
+sudo chmod 644 "$SPOTIFY_KEYRING"
+sudo rm -f /etc/apt/trusted.gpg.d/spotify.gpg
+
 echo "[INFO] Adding Spotify APT repository..."
+echo "deb [signed-by=$SPOTIFY_KEYRING] https://repository.spotify.com stable non-free" \
+  | sudo tee "$SPOTIFY_SOURCE_LIST" > /dev/null
 
-# Update en installeer
-echo "[INFO] Updating apt and installing Spotify..."
-# sudo apt update
-# sudo apt install -y spotify-client
-sudo apt-get update && sudo apt-get install spotify-client
+echo "[INFO] Installing Spotify..."
+sudo apt-get update
+sudo apt-get install -y spotify-client
 
 echo "[SUCCESS] Spotify is now installed."
-

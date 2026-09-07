@@ -1,7 +1,7 @@
 #!/bin/bash
 # 11-install-openfortivpn.sh
-# Installs openfortivpn on Ubuntu 24.04 and sets up global config
-# DNS configuration is optional
+# Installs openfortivpn and sets up a global config.
+# DNS configuration is optional.
 
 set -e
 
@@ -10,7 +10,7 @@ sudo apt update
 sudo apt install -y openfortivpn
 
 # Prompt for VPN details
-read -rp "Enter your VPN host (e.g. vpn.bedrijf.nl): " VPN_HOST
+read -rp "Enter your VPN host (e.g. vpn.example.com): " VPN_HOST
 read -rp "Enter your VPN port (default: 443): " VPN_PORT
 VPN_PORT=${VPN_PORT:-443}
 read -rp "Enter your VPN username: " VPN_USER
@@ -50,6 +50,5 @@ fi
 echo "[DONE] openfortivpn installed and configured."
 echo "Run it with: sudo openfortivpn"
 echo ""
-echo "🔐 Tip: Don't store your password in the config file!"
-echo "🔐 Enter it manually when prompted, or use a secure password manager."
-
+echo "Tip: Don't store your password in the config file."
+echo "Enter it manually when prompted, or use a secure password manager."

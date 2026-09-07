@@ -6,7 +6,7 @@ set -e
 # Define variables
 PROJECTS_DIR="/mnt/data/projects"
 REPO_NAME="workstation-setup-scripts"
-REPO_URL="https://github.com/yourusername/workstation-setup-scripts.git"  # Replace with your actual repo URL
+REPO_URL="https://github.com/monterhealth/workstation-setup-scripts.git"
 TARGET_DIR="$PROJECTS_DIR/$REPO_NAME"
 
 # Ensure the base projects directory exists
@@ -34,4 +34,3 @@ echo "[INFO] Making all .sh files in $TARGET_DIR executable..."
 find "$TARGET_DIR" -type f -name "*.sh" -exec chmod +x {} \;
 
 echo "[SUCCESS] Bootstrap completed. You can now run the individual install scripts from $TARGET_DIR."
-

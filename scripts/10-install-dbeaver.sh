@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 09-install-dbeaver.sh
+# 10-install-dbeaver.sh
 # Installs DBeaver Community Edition via official APT repository for auto-updates
 
 set -e
